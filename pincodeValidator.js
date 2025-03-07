@@ -8,7 +8,3 @@ function validatePinCode(pinCode) {
 }
 
 validatePinCode("400088");
-validatePinCode("000123");
-validatePinCode("4008A8");
-validatePinCode("1234");
-validatePinCode("1234567");
