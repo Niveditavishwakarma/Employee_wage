@@ -9,8 +9,7 @@ const NUM_OF_WORKING_DAYS = 20;
 const MAX_HRS_IN_MONTH = 160;
 let totalWorkingDays = 0;
 let totalEmpHrs = 0;
-let empDailyWageMap = new Map();
-let empDailyHoursMap = new Map();
+let empDailyHrsAndWageArr = new Array();
 
 function calcDailyWage(empHrs) {
   return empHrs * WAGE_PER_HOUR;
@@ -36,33 +35,55 @@ while (
   let empHrs = getWorkingHours(empCheck);
   totalEmpHrs += empHrs;
 
-  empDailyWageMap.set(totalWorkingDays, calcDailyWage(empHrs));
-  empDailyHoursMap.set(totalWorkingDays, empHrs);
+  empDailyHrsAndWageArr.push({
+    dayNum: totalWorkingDays,
+    dailyHours: empHrs,
+    dailyWage: calcDailyWage(empHrs),
+    toString() {
+      return (
+        "\nDay" +
+        this.dayNum +
+        " => Working Hours is " +
+        this.dailyHours +
+        " And Wage Earned = " +
+        this.dailyWage
+      );
+    },
+  });
 }
 
-const totalWage = Array.from(empDailyWageMap.values()).reduce(
-  (sum, wage) => sum + wage,
-  0
-);
-const totalHours = Array.from(empDailyHoursMap.values()).reduce(
-  (sum, hours) => sum + hours,
-  0
-);
-
 console.log(
-  `Emp Wage with Arrow:  Total hours: ${totalHours}  Total Wages: ${totalWage}`
+  "UC10 Showing Daily Hours Worked and Wage Earned: " + empDailyHrsAndWageArr
 );
 
-let nonWorkingDays = [];
-let partWorkingDays = [];
-let fullWorkingDays = [];
+// uc11 a) Calculate total wage and total hours worked using reduce
+const total = empDailyHrsAndWageArr.reduce(
+  (acc, emp) => {
+    acc.totalHours += emp.dailyHours;
+    acc.totalWage += emp.dailyWage;
+    return acc;
+  },
+  { totalHours: 0, totalWage: 0 }
+);
+console.log(`\nTotal Hours Worked: ${total.totalHours}`);
+console.log(`Total Wage Earned: ${total.totalWage}`);
 
-empDailyHoursMap.forEach((hours, day) => {
-  if (hours === FULL_TIME_HOURS) fullWorkingDays.push(day);
-  else if (hours === PART_TIME_HOURS) partWorkingDays.push(day);
-  else nonWorkingDays.push(day);
+// uc11 b) Show full working days using forEach
+console.log("\nFull Working Days:");
+empDailyHrsAndWageArr.forEach((emp) => {
+  if (emp.dailyHours === FULL_TIME_HOURS) console.log(`Day ${emp.dayNum}`);
 });
 
-console.log("Full Working Days: " + fullWorkingDays.join(", "));
-console.log("Part Working Days: " + partWorkingDays.join(", "));
-console.log("Non Working Days: " + nonWorkingDays.join(", "));
+// uc11 c) Show part working days using map by reducing to a string array
+const partWorkingDays = empDailyHrsAndWageArr
+  .filter((emp) => emp.dailyHours === PART_TIME_HOURS)
+  .map((emp) => `Day ${emp.dayNum}`);
+
+console.log("\nPart Working Days:", partWorkingDays.join(", "));
+
+// uc11 d) Show no working days using only map function
+const noWorkingDays = empDailyHrsAndWageArr
+  .map((emp) => (emp.dailyHours === 0 ? `Day ${emp.dayNum}` : null))
+  .filter((day) => day !== null);
+
+console.log("\nNo Working Days:", noWorkingDays.join(", "));
