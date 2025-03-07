@@ -1,34 +1,39 @@
 class EmployeePayroll {
   constructor(id, name, salary, gender, startDate) {
     this.id = id;
-    this.name = name;
+    this.setName(name);
     this.salary = salary;
     this.gender = gender;
     this.startDate = new Date(startDate);
   }
 
-  getDetails = () =>
-    `ID: ${this.id}, Name: ${this.name}, Gender: ${this.gender}, Salary: $${
-      this.salary
-    }, Start Date: ${this.startDate.toDateString()}`;
+  setName(name) {
+    try {
+      const namePattern = /^[A-Z][a-zA-Z]{2,}$/;
+      if (!namePattern.test(name)) {
+        throw new Error(
+          "❌ Invalid Name! Name must start with a capital letter and have at least 3 characters."
+        );
+      }
+      this.name = name;
+    } catch (error) {
+      console.error(error.message);
+      this.name = "Invalid";
+    }
+  }
 
-  updateSalary = (newSalary) => {
-    this.salary = newSalary;
-    return `Salary updated for ${this.name} to $${this.salary}`;
-  };
+  getDetails() {
+    return `ID: ${this.id}, Name: ${this.name}, Gender: ${
+      this.gender
+    }, Salary: $${this.salary}, Start Date: ${this.startDate.toDateString()}`;
+  }
 }
 
-const employees = [
-  new EmployeePayroll(101, "Alice", 5000, "Female", "2023-01-15"),
-  new EmployeePayroll(102, "Bob", 7000, "Male", "2022-08-10"),
-  new EmployeePayroll(103, "Charlie", 6000, "Male", "2021-05-25"),
-];
+const emp1 = new EmployeePayroll(101, "Alice", 5000, "Female", "2023-01-15");
+console.log("\n✅ Employee Created: " + emp1.getDetails());
 
-console.log("\n🔹 Employee Payroll Data:");
-employees.forEach((emp) => console.log(emp.getDetails()));
+const emp2 = new EmployeePayroll(102, "bob", 7000, "Male", "2022-08-10");
+console.log("\n❌ Employee with Invalid Name: " + emp2.getDetails());
 
-console.log("\n🔹 Updating Salary:");
-console.log(employees[1].updateSalary(7500));
-
-console.log("\n🔹 Updated Employee Payroll Data:");
-employees.forEach((emp) => console.log(emp.getDetails()));
+const emp3 = new EmployeePayroll(103, "Al", 6000, "Male", "2021-05-25");
+console.log("\n❌ Employee with Short Name: " + emp3.getDetails());
