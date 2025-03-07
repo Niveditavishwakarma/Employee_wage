@@ -55,4 +55,35 @@ while (
 console.log(
   "UC10 Showing Daily Hours Worked and Wage Earned: " + empDailyHrsAndWageArr
 );
-r;
+
+// uc11 a) Calculate total wage and total hours worked using reduce
+const total = empDailyHrsAndWageArr.reduce(
+  (acc, emp) => {
+    acc.totalHours += emp.dailyHours;
+    acc.totalWage += emp.dailyWage;
+    return acc;
+  },
+  { totalHours: 0, totalWage: 0 }
+);
+console.log(`\nTotal Hours Worked: ${total.totalHours}`);
+console.log(`Total Wage Earned: ${total.totalWage}`);
+
+// uc11 b) Show full working days using forEach
+console.log("\nFull Working Days:");
+empDailyHrsAndWageArr.forEach((emp) => {
+  if (emp.dailyHours === FULL_TIME_HOURS) console.log(`Day ${emp.dayNum}`);
+});
+
+// uc11 c) Show part working days using map by reducing to a string array
+const partWorkingDays = empDailyHrsAndWageArr
+  .filter((emp) => emp.dailyHours === PART_TIME_HOURS)
+  .map((emp) => `Day ${emp.dayNum}`);
+
+console.log("\nPart Working Days:", partWorkingDays.join(", "));
+
+// uc11 d) Show no working days using only map function
+const noWorkingDays = empDailyHrsAndWageArr
+  .map((emp) => (emp.dailyHours === 0 ? `Day ${emp.dayNum}` : null))
+  .filter((day) => day !== null);
+
+console.log("\nNo Working Days:", noWorkingDays.join(", "));
